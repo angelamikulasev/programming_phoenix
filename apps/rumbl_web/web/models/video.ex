@@ -2,7 +2,7 @@ defmodule RumblWeb.Video do
   use RumblWeb.Web, :model
 
   schema "videos" do
-    field :" url", :string
+    field :url, :string
     field :title, :string
     field :description, :string
     belongs_to :user, RumblWeb.User
@@ -10,12 +10,14 @@ defmodule RumblWeb.Video do
     timestamps()
   end
 
+  @required_fields ~w(url title description)
+  @optional_fields ~w()
+
   @doc """
   Builds a changeset based on the `struct` and `params`.
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:" url", :title, :description])
-    |> validate_required([:" url", :title, :description])
+    |> cast(params, @required_fields, @optional_fields)
   end
 end
