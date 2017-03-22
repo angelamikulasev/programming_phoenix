@@ -1,6 +1,8 @@
 defmodule RumblWeb.UserController do
   use RumblWeb.Web, :controller
 
+  plug :authenticate_user when action in [:index, :show]
+
   alias RumblWeb.User
 
   def index(conn, _params) do
@@ -14,12 +16,13 @@ defmodule RumblWeb.UserController do
   end
 
   def create(conn, %{"user" => user_params}) do
-    changeset = User.changeset(%User{}, user_params)
+    changeset = User.registration_changeset(%User{}, user_params)
 
     case Repo.insert(changeset) do
-      {:ok, _user} ->
+      {:ok, user} ->
         conn
-        |> put_flash(:info, "User created successfully.")
+        |> RumblWeb.Auth.login(user)
+        |> put_flash(:info, "#{user.name} created successfully.")
         |> redirect(to: user_path(conn, :index))
       {:error, changeset} ->
         render(conn, "new.html", changeset: changeset)
@@ -53,13 +56,21 @@ defmodule RumblWeb.UserController do
 
   def delete(conn, %{"id" => id}) do
     user = Repo.get!(User, id)
-
-    # Here we use delete! (with a bang) because we expect
-    # it to always work (and if it does not, it will raise).
     Repo.delete!(user)
 
     conn
     |> put_flash(:info, "User deleted successfully.")
     |> redirect(to: user_path(conn, :index))
+  end
+
+  defp authenticate(conn, _opts) do
+    if conn.assigns.current_user do
+      conn
+    else
+      conn
+      |> put_flash(:error, "you must be logged in to access that page")
+      |> redirect(to: page_path(conn, :index))
+      |> halt()
+    end
   end
 end

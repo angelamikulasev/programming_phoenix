@@ -36,6 +36,7 @@ defmodule RumblWeb.Web do
 
       import RumblWeb.Router.Helpers
       import RumblWeb.Gettext
+      import RumblWeb.Auth, only: [authenticate_user: 2]
     end
   end
 
@@ -69,6 +70,7 @@ defmodule RumblWeb.Web do
       import Ecto
       import Ecto.Query
       import RumblWeb.Gettext
+      import RumblWeb.Auth, only: [authenticate_user: 2]
     end
   end
 

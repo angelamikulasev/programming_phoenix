@@ -7,21 +7,6 @@
     <%= @user.name %>
   </li>
 
-  <li>
-    <strong>Username:</strong>
-    <%= @user.username %>
-  </li>
-
-  <li>
-    <strong>Password:</strong>
-    <%= @user.password %>
-  </li>
-
-  <li>
-    <strong>Password hash:</strong>
-    <%= @user.password_hash %>
-  </li>
-
 </ul>
 
 <%= link "Edit", to: user_path(@conn, :edit, @user) %>
