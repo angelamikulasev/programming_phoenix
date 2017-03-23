@@ -11,13 +11,11 @@ defmodule RumblWeb.User do
     timestamps()
   end
 
-  @doc """
-  Builds a changeset based on the `struct` and `params`.
-  """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:name, :username])
-    |> validate_required([:name])
+    |> cast(params, [:name, :username],[])
+    |> validate_length(:username, min: 1, max: 20)
+    |> unique_constraint(:username)
   end
 
   def registration_changeset(struct, params) do
